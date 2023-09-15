@@ -23,4 +23,3 @@ class fifo_test extends uvm_test;
   endtask
   
 endclass
-

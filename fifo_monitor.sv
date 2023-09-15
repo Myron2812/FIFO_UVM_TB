@@ -44,4 +44,3 @@ class fifo_monitor extends uvm_monitor;
 endclass
 
     
-

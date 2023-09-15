@@ -21,4 +21,3 @@ class fifo_enviroment extends uvm_env;
   endfunction
   
 endclass
-
