@@ -1,4 +1,4 @@
-module FIFO(clk, rstn, i_wrdata, i_wren, i_rden, o_full, o_alm_full, o_alm_empty, o_empty, o_rddata);
+module my_fifo(clk, rstn, i_wrdata, i_wren, i_rden, o_full, o_alm_full, o_alm_empty, o_empty, o_rddata);
   parameter ADDRESS = 10, DATA_W = 128, DEPTH = 1024, UPP_TH = 4, LOW_TH = 2;
   
   input clk, rstn, i_wren, i_rden;
