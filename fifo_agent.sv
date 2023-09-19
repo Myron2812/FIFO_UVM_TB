@@ -29,3 +29,4 @@ class fifo_agent extends uvm_agent;
   endfunction
   
 endclass
+

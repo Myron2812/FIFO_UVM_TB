@@ -45,3 +45,4 @@ endclass
     seq_item.print();   
   end  
 endmodule*///test if sequence items are generated
+
