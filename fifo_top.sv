@@ -3,6 +3,8 @@ import uvm_pkg::*;
 `include "uvm_macros.svh"
 `include "fifo_interface.sv"
 `include "fifo_test.sv"
+`include "fifo.v"
+//`include "mydesign.sv"
 
 module tb;
   bit clk;
@@ -19,7 +21,7 @@ module tb;
   
   fifo_interface tif(clk, rstn);
   
-  FIFO dut(.clk(tif.clk),
+  my_fifo dut(.clk(tif.clk),
                .rstn(tif.rstn),
                .i_wrdata(tif.i_wrdata),
                .i_wren(tif.i_wren),
