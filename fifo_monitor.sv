@@ -30,7 +30,7 @@ class fifo_monitor extends uvm_monitor;
         item_got_port.write(item_got);
       end
       else if(vif.m_mp.m_cb.i_rden == 1)begin
-        @(posedge vif.m_mp.clk)
+        //@(posedge vif.m_mp.clk)
         $display("\ni_rden is high");
         item_got.o_rddata = vif.m_mp.m_cb.o_rddata;
         item_got.i_rden = 1;

@@ -3,8 +3,8 @@ import uvm_pkg::*;
 `include "uvm_macros.svh"
 `include "fifo_interface.sv"
 `include "fifo_test.sv"
-`include "fifo.v"
 //`include "mydesign.sv"
+`include "fifo.sv"
 
 module tb;
   bit clk;
@@ -14,9 +14,9 @@ module tb;
   
   initial begin
     clk = 1;
-    rstn = 1;
-    #5;
     rstn = 0;
+    #5;
+    rstn = 1;
   end
   
   fifo_interface tif(clk, rstn);
@@ -37,6 +37,7 @@ module tb;
     $dumpfile("dump.vcd"); 
     $dumpvars;
     run_test("fifo_test");
+    $finish;
   end
   
 endmodule

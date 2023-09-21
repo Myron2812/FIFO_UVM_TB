@@ -4,45 +4,32 @@ class fifo_subscriber extends uvm_subscriber #(fifo_seq_item);
     fifo_seq_item fifo_item;
     fifo_seq_item fifo_queue[$];
 
-    covergroup cg;
-	option.per_instance = 1; 
-        cov_i_wren_p : coverpoint fifo_item.i_wren {
-            bins i_wren_1   = {1'b1}; 
-            bins i_wren_0   = {1'b0};
-        }
-        cov_i_rden_p : coverpoint fifo_item.i_rden {
-            bins i_rden_1 = {1'b1}; 
-            bins i_rden_0 = {1'b0};
-        }
-        cov_o_full_p  : coverpoint fifo_item.o_full {
-            bins o_full_1 = {1'b1}; 
-            bins o_full_0 = {1'b0};
-        }
-        cov_o_alm_full_p  : coverpoint fifo_item.o_alm_full {
-            bins o_alm_full_1 = {1'b1}; 
-            bins o_alm_full_0 = {1'b0};
-        }
-        cov_o_alm_empty_p  : coverpoint fifo_item.o_alm_empty {
-            bins o_alm_empty_1 = {1'b1}; 
-            bins o_alm_empty_0 = {1'b0};
-        }
-        cov_empty_p  : coverpoint fifo_item.o_empty {
-            bins o_empty_1 = {1'b1}; 
-            bins o_empty_0 = {1'b0};
-        } 
+    covergroup cg_en;
+	option.per_instance = 1;
+        covg_i_wren      : coverpoint fifo_item.i_wren;  
+        covg_i_rden      : coverpoint fifo_item.i_rden;
+        covg_i_wrdata    : coverpoint fifo_item.i_wrdata;
+        covg_o_rddata    : coverpoint fifo_item.o_rddata;
+    endgroup: cg_en
 
-        cross cov_i_wren_p, cov_i_rden_p {
-            bins wr_i_rden_00 = binsof(cov_i_wren_p) intersect {1'b0} && binsof(cov_i_rden_p) intersect {1'b0};
-            bins wr_i_rden_10 = binsof(cov_i_wren_p) intersect {1'b1} && binsof(cov_i_rden_p) intersect {1'b0};
-            bins wr_i_rden_01 = binsof(cov_i_wren_p) intersect {1'b0} && binsof(cov_i_rden_p) intersect {1'b1};
-            bins wr_i_rden_11 = binsof(cov_i_wren_p) intersect {1'b1} && binsof(cov_i_rden_p) intersect {1'b1};
-        }
+    covergroup cg_write;
+	option.per_instance = 1;
+	option.auto_bin_max = 1024;
+	covg_i_wrdata : coverpoint fifo_item.i_wrdata;
+    endgroup
+
+    covergroup cg_read;
+        option.per_instance = 1;
+	option.auto_bin_max = 1024;
+	covg_o_rddata : coverpoint fifo_item.o_rddata;
     endgroup
         
     function new(string name, uvm_component parent);
         super.new(name, parent);
         cov_exp = new("cov_exp",this);
-        cg = new();
+        cg_en = new();
+	cg_write = new();
+	cg_read = new();
     endfunction: new
 
   function void write(fifo_seq_item t);
@@ -56,12 +43,14 @@ class fifo_subscriber extends uvm_subscriber #(fifo_seq_item);
 	      fifo_item = fifo_seq_item::type_id::create("fifo_item",this);
           wait(fifo_queue.size!=0);
 	     	fifo_item  = fifo_queue.pop_back();
-	    cg.sample();  
+    cg_en.sample();
+	cg_write.sample();
+	cg_read.sample();
         end 
     endtask :run_phase
 
     virtual function void extract_phase(uvm_phase phase);
-        `uvm_info(get_type_name(), $sformatf("Coverage : %f", cg.get_coverage()), UVM_LOW)
-    endfunction: extract_phase
+        `uvm_info(get_type_name(), $sformatf("Coverage for enables : %f\nWrite Coverage : %f\nRead Coverage : %f", cg_en.get_inst_coverage(),cg_write.get_inst_coverage(),cg_read.get_inst_coverage()), UVM_LOW)    endfunction: extract_phase
 
 endclass: fifo_subscriber
+
